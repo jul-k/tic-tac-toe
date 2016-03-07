@@ -1,6 +1,17 @@
 // bower:scss
 // endbower
 
+.container {
+    margin-top: 100px;
+}
+
+.square {
+    width: 100px;
+    height: 100px;
+    border: 1px solid #000;
+    display: inline-block;
+}
+
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
   .container {
