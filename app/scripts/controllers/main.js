@@ -44,11 +44,20 @@ app.controller('MainCtrl', ['$scope', function ($scope) {
             return;
         }
         row[index] = 'X';
+        $scope.turnNumber++;
+        if ($scope.isWin()){
+            alert('Player ' + $scope.currentPlayer + ' won');
+            return
+        }
         $scope.currentPlayer = 'O';
-        $scope.turnNumber++;
+
         $scope.aiTurn();
-        $scope.currentPlayer = 'X';
         $scope.turnNumber++;
+        if ($scope.isWin()){
+            alert('Player ' + $scope.currentPlayer + ' won');
+            return
+        }
+        $scope.currentPlayer = 'X';
     };
 
     $scope.getAllPossibleLines = function(board) {
@@ -102,7 +111,7 @@ app.controller('MainCtrl', ['$scope', function ($scope) {
     };
 
     $scope.aiTurn = function (whoAmI) {
-        whoAmI = 'O';
+        whoAmI =  whoAmI || 'O';
 
         function hasPlaceToWin(array) {
             var vals = _.uniq(array);
@@ -125,7 +134,7 @@ app.controller('MainCtrl', ['$scope', function ($scope) {
         var vals = _.filter(spotes, function (el) {
             return el;
         });
-        console.log(vals);
+
         function resolveIndex(array) {
             var nullIndex = array.indexOf(null);
             var lineIndex = lines.indexOf(array);
@@ -150,19 +159,26 @@ app.controller('MainCtrl', ['$scope', function ($scope) {
             return [i, j];
         }
         var prioritizedMovesToWin = _.map(vals, resolveIndex)
-
-        if (prioritizedMovesToWin.length > 1){
+        console.log(prioritizedMovesToWin);
+        if (prioritizedMovesToWin.length >= 1){
             var k, m;
             k = prioritizedMovesToWin[0][0];
             m = prioritizedMovesToWin[0][1];
             $scope.board[k][m] = whoAmI;
         } else {
+            console.log('Random move');
             var k, m;
+            var attempts = 100;
             while (true) {
                 k = getRandomInt(0, 3);
                 m = getRandomInt(0, 3);
                 if ($scope.board[k][m] === null) {
                     $scope.board[k][m] = whoAmI;
+                    break;
+                }
+                attempts--;
+                if (attempts < 0) {
+                    alert('Could not decide');
                     break;
                 }
             }

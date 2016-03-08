@@ -84,7 +84,7 @@ describe('Controller: MainCtrl', function () {
         [null, 'X' , null],
         ['X', null, null]
      ];
-    expect(scope.aiTurn()).toEqual(shouldBe);
+    expect(scope.aiTurn('X')).toEqual(shouldBe);
   });
 
   it('should prevent oponent to win', function () {
@@ -99,7 +99,22 @@ describe('Controller: MainCtrl', function () {
         [null, null , null],
         ['X', null, 'X']
      ];
-    expect(scope.aiTurn()).toEqual(shouldBe);
+    expect(scope.aiTurn('X')).toEqual(shouldBe);
+  });
+
+  it('should prevent oponent to win when column is almost filled', function () {
+     scope.board = [
+         ['X', null, null],
+         [null, null , null],
+         ['X', null, null]
+      ];
+
+    var shouldBe = [
+        ['X', null,  null],
+        ['O', null , null],
+        ['X', null, null]
+     ];
+    expect(scope.aiTurn('O')).toEqual(shouldBe);
   });
 
 });
