@@ -72,4 +72,34 @@ describe('Controller: MainCtrl', function () {
   });
 
 
+  it('should put X when we could win', function () {
+     scope.board = [
+         ['O', 'O', null],
+         [null, 'X' , null],
+         ['X', null, null]
+      ];
+
+    var shouldBe = [
+        ['O', 'O', 'X'],
+        [null, 'X' , null],
+        ['X', null, null]
+     ];
+    expect(scope.aiTurn()).toEqual(shouldBe);
+  });
+
+  it('should prevent oponent to win', function () {
+     scope.board = [
+         ['O', 'O', null],
+         [null, null , null],
+         ['X', null, 'X']
+      ];
+
+    var shouldBe = [
+        ['O', 'O', 'X'],
+        [null, null , null],
+        ['X', null, 'X']
+     ];
+    expect(scope.aiTurn()).toEqual(shouldBe);
+  });
+
 });
