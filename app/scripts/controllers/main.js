@@ -17,13 +17,18 @@ function getRandomInt(min, max) {
 var app = angular.module('ticTacToeApp');
 
 app.controller('MainCtrl', ['$scope', function ($scope) {
-    $scope.turnNumber = 1;
-    $scope.currentPlayer = 'X';
-    $scope.board = [
-        [null, null, null],
-        [null, null, null],
-        [null, null, null]
-    ];
+
+    $scope.init = function() {
+        $scope.turnNumber = 1;
+        $scope.currentPlayer = 'X';
+        $scope.board = [
+            [null, null, null],
+            [null, null, null],
+            [null, null, null]
+        ];
+    }
+
+    $scope.init();
 
     $scope.update = function (index, row) {
         if (row[index] !== null) {
@@ -46,16 +51,18 @@ app.controller('MainCtrl', ['$scope', function ($scope) {
         row[index] = 'X';
         $scope.turnNumber++;
         if ($scope.isWin()){
-            alert('Player ' + $scope.currentPlayer + ' won');
-            return
+            notie.alert(1, 'Player ' + $scope.currentPlayer + ' won', 3);
+            $scope.init();
+            return;
         }
         $scope.currentPlayer = 'O';
 
         $scope.aiTurn();
         $scope.turnNumber++;
         if ($scope.isWin()){
-            alert('Player ' + $scope.currentPlayer + ' won');
-            return
+            notie.alert(1, 'Player ' + $scope.currentPlayer + ' won', 3);
+            $scope.init();
+            return;
         }
         $scope.currentPlayer = 'X';
     };
@@ -178,7 +185,9 @@ app.controller('MainCtrl', ['$scope', function ($scope) {
                 }
                 attempts--;
                 if (attempts < 0) {
-                    alert('Could not decide');
+                    notie.alert(1, 'It\'s a tie', 3);
+                    $scope.init();
+                    $scope.turnNumber = 0;
                     break;
                 }
             }
