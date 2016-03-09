@@ -16,11 +16,11 @@ function getRandomInt(min, max) {
 
 var app = angular.module('ticTacToeApp');
 
-app.controller('MainCtrl', ['$scope', function ($scope) {
+app.controller('MainCtrl', ['$scope', '$routeParams', function ($scope, $routeParams) {
 
     $scope.init = function() {
         $scope.turnNumber = 1;
-        $scope.currentPlayer = 'X';
+        $scope.currentPlayer = $routeParams.player;
         $scope.board = [
             [null, null, null],
             [null, null, null],
