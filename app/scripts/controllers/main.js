@@ -16,16 +16,30 @@ function getRandomInt(min, max) {
 
 var app = angular.module('ticTacToeApp');
 
-app.controller('MainCtrl', ['$scope', '$routeParams', function ($scope, $routeParams) {
+app.controller('MainCtrl', ['$scope', '$routeParams', '$timeout', function ($scope, $routeParams, $timeout) {
 
     $scope.init = function() {
-        $scope.turnNumber = 1;
-        $scope.currentPlayer = $routeParams.player;
         $scope.board = [
             [null, null, null],
             [null, null, null],
             [null, null, null]
         ];
+
+        $scope.turnNumber = 1;
+        $scope.currentPlayer = 'X'
+
+        $scope.human = $routeParams.player;
+        if ($scope.human === 'X'){
+            $scope.robot = 'O';
+        } else {
+            $scope.robot = 'X';
+            $timeout(function() {
+                $scope.aiTurn($scope.robot);
+                $scope.turnNumber++;
+                $scope.currentPlayer = $scope.human;
+            }, 500);
+        }
+
     }
 
     $scope.init();
@@ -34,37 +48,38 @@ app.controller('MainCtrl', ['$scope', '$routeParams', function ($scope, $routePa
         if (row[index] !== null) {
             return;
         }
-        if ($scope.turnNumber % 2 != 0) {
-            $scope.currentPlayer = 'O'
-            row[index] = 'X';
-        } else {
-            $scope.currentPlayer = 'X';
-            row[index] = 'O';
-        }
+        row[index] = $scope.human;
         $scope.turnNumber++;
+        if ($scope.isWin()){
+            notie.alert(1, 'Player ' + $scope.human + ' won', 3);
+            $timeout($scope.init, 2000);
+            return;
+        }
+        $scope.currentPlayer = $scope.robot;
+
+        $scope.aiTurn($scope.robot);
+        $scope.turnNumber++;
+        if ($scope.isWin()){
+            notie.alert(1, 'Player ' + $scope.robot + ' won', 3);
+            $timeout($scope.init, 2000);
+            return;
+        }
+        $scope.currentPlayer = $scope.human;
+        if ($scope.isFull()) {
+            $scope.tie();
+        }
     };
 
-    $scope.update = function (index, row) {
-        if (row[index] !== null) {
-            return;
-        }
-        row[index] = 'X';
-        $scope.turnNumber++;
-        if ($scope.isWin()){
-            notie.alert(1, 'Player ' + $scope.currentPlayer + ' won', 3);
-            $scope.init();
-            return;
-        }
-        $scope.currentPlayer = 'O';
+    $scope.isFull = function() {
 
-        $scope.aiTurn();
-        $scope.turnNumber++;
-        if ($scope.isWin()){
-            notie.alert(1, 'Player ' + $scope.currentPlayer + ' won', 3);
-            $scope.init();
-            return;
+        for (var i = 0; i < $scope.board.length; i++) {
+            for (var j = 0; j < $scope.board[i].length; j++) {
+                if($scope.board[i][j] === null) {
+                    return false;
+                }
+            }
         }
-        $scope.currentPlayer = 'X';
+        return true;
     };
 
     $scope.getAllPossibleLines = function(board) {
@@ -185,14 +200,19 @@ app.controller('MainCtrl', ['$scope', '$routeParams', function ($scope, $routePa
                 }
                 attempts--;
                 if (attempts < 0) {
-                    notie.alert(1, 'It\'s a tie', 3);
-                    $scope.init();
-                    $scope.turnNumber = 0;
+                    $scope.tie();
                     break;
                 }
             }
         }
         return $scope.board;
+    };
+
+    $scope.tie = function () {
+        notie.alert(1, 'It\'s a tie', 3);
+        $scope.init();
+        $scope.turnNumber = 0;
+
     };
 
 }]);
