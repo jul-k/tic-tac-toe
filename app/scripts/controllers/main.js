@@ -16,7 +16,7 @@ function getRandomInt(min, max) {
 
 var app = angular.module('ticTacToeApp');
 
-app.controller('MainCtrl', ['$scope', '$routeParams', '$timeout', function ($scope, $routeParams, $timeout) {
+app.controller('MainCtrl', ['$scope', '$routeParams', '$timeout', '$location', function ($scope, $routeParams, $timeout, $location) {
 
     $scope.init = function() {
         $scope.board = [
@@ -26,7 +26,8 @@ app.controller('MainCtrl', ['$scope', '$routeParams', '$timeout', function ($sco
         ];
 
         $scope.turnNumber = 1;
-        $scope.currentPlayer = 'X'
+        $scope.currentPlayer = 'X';
+        $scope.wait = false;
 
         $scope.human = $routeParams.player;
         if ($scope.human === 'X'){
@@ -45,7 +46,7 @@ app.controller('MainCtrl', ['$scope', '$routeParams', '$timeout', function ($sco
     $scope.init();
 
     $scope.update = function (index, row) {
-        if (row[index] !== null) {
+        if (row[index] !== null || $scope.wait) {
             return;
         }
         row[index] = $scope.human;
@@ -56,18 +57,22 @@ app.controller('MainCtrl', ['$scope', '$routeParams', '$timeout', function ($sco
             return;
         }
         $scope.currentPlayer = $scope.robot;
+        $scope.wait = true;
 
-        $scope.aiTurn($scope.robot);
-        $scope.turnNumber++;
-        if ($scope.isWin()){
-            notie.alert(1, 'Player ' + $scope.robot + ' won', 3);
-            $timeout($scope.init, 2000);
-            return;
-        }
-        $scope.currentPlayer = $scope.human;
-        if ($scope.isFull()) {
-            $scope.tie();
-        }
+        $timeout(function () {
+            $scope.aiTurn($scope.robot);
+            $scope.turnNumber++;
+            if ($scope.isWin()){
+                notie.alert(1, 'Player ' + $scope.robot + ' won', 3);
+                $timeout($scope.init, 2000);
+                return;
+            }
+            $scope.currentPlayer = $scope.human;
+            if ($scope.isFull()) {
+                $scope.tie();
+            }
+            $scope.wait = false;
+        }, 1000);
     };
 
     $scope.isFull = function() {
@@ -214,5 +219,9 @@ app.controller('MainCtrl', ['$scope', '$routeParams', '$timeout', function ($sco
         $scope.turnNumber = 0;
 
     };
+
+    $scope.back = function () {
+        $location.path('/game/');
+    }
 
 }]);

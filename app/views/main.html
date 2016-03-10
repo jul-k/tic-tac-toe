@@ -1,14 +1,13 @@
-<div class="row">
-    <div class="col-sm-offset-3 col-sm-6 col-xs-12">
-        <p>Current player : {{currentPlayer}}</p>
-        <p>Turn Number : {{turnNumber}}</p>
-    </div>
-</div>
-
 <div class="row" ng-repeat='row in board track by $index'>
     <div class="col-sm-offset-3 col-sm-6 col-xs-12">
         <div class="square" ng-click="update($index, row)" ng-repeat='cell in row track by $index'>
             <div class="player">{{ cell }}</div>
         </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <a href="" class="start-btn" ng-click='back();'>Change player</a>
     </div>
 </div>
